@@ -19,24 +19,23 @@
   <meta name="author" content="dyliu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Install v2rayADownlaod image The easiest way to download iamge is though:   1docker pull mzz2017&#x2F;v2raya  However, if you can not get access to Docker Hub, you have two solution:    find an available m">
+    <meta name="description" content="Install Ubuntu on Windows laptop (dual system) Laptop: Mechrevo wujie14 pro  Check bios modeIn windows, press Win+R and find msinfo32 to check bios mode.  If it’s not UEFI (for example, Legacy), you n">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Install v2rayA">
-<meta property="og:url" content="https://dyliu0312.github.io/2024/12/01/Install-v2rayA/index.html">
+<meta property="og:title" content="Install Ubuntu on Windows laptop (dual system)">
+<meta property="og:url" content="https://dyliu0312.github.io/2024/12/01/Install-Ubuntu-on-Windows-laptop-dual-system/index.html">
 <meta property="og:site_name" content="dyliu&#39;s Blog">
-<meta property="og:description" content="Install v2rayADownlaod image The easiest way to download iamge is though:   1docker pull mzz2017&#x2F;v2raya  However, if you can not get access to Docker Hub, you have two solution:    find an available m">
+<meta property="og:description" content="Install Ubuntu on Windows laptop (dual system) Laptop: Mechrevo wujie14 pro  Check bios modeIn windows, press Win+R and find msinfo32 to check bios mode.  If it’s not UEFI (for example, Legacy), you n">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-12-01T10:03:25.000Z">
-<meta property="article:modified_time" content="2024-12-01T13:49:34.255Z">
+<meta property="article:published_time" content="2024-12-01T14:04:03.000Z">
+<meta property="article:modified_time" content="2024-12-01T15:48:12.933Z">
 <meta property="article:author" content="dyliu">
 <meta property="article:tag" content="Ubuntu">
-<meta property="article:tag" content="Docker">
-<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Windows">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Install v2rayA - dyliu&#39;s Blog</title>
+  <title>Install Ubuntu on Windows laptop (dual system) - dyliu&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +201,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Install v2rayA"></span>
+            <span id="subtitle" data-typed-text="Install Ubuntu on Windows laptop (dual system)"></span>
           
         </div>
 
@@ -213,7 +212,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-01 18:03" pubdate>
+        <time datetime="2024-12-01 22:04" pubdate>
           December 1, 2024 pm
         </time>
       </span>
@@ -225,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          62 words
+          99 words
         
       </span>
     
@@ -273,35 +272,80 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Install v2rayA</h1>
+            <h1 id="seo-header">Install Ubuntu on Windows laptop (dual system)</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Install-v2rayA"><a href="#Install-v2rayA" class="headerlink" title="Install v2rayA"></a>Install <a target="_blank" rel="noopener" href="https://github.com/v2rayA/v2rayA?tab=readme-ov-file">v2rayA</a></h1><h2 id="Downlaod-image"><a href="#Downlaod-image" class="headerlink" title="Downlaod image"></a>Downlaod image</h2><ul>
-<li><p>The easiest way to download iamge is though:</p>
-  <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull mzz2017/v2raya<br></code></pre></td></tr></table></figure>
+                <h1 id="Install-Ubuntu-on-Windows-laptop-dual-system"><a href="#Install-Ubuntu-on-Windows-laptop-dual-system" class="headerlink" title="Install Ubuntu on Windows laptop (dual system)"></a>Install Ubuntu on Windows laptop (dual system)</h1><ul>
+<li>Laptop: Mechrevo wujie14 pro</li>
+</ul>
+<h2 id="Check-bios-mode"><a href="#Check-bios-mode" class="headerlink" title="Check bios mode"></a>Check bios mode</h2><p>In windows, press <code>Win+R</code> and find <code>msinfo32</code> to check bios mode. </p>
+<p>If it’s not UEFI (for example, Legacy), you need to swith to bios mode, and change the <code>Boot</code>.</p>
+<p>It’s UEFI in my laptop, no need to worry.</p>
+<h2 id="Check-GUID-Partition-Table"><a href="#Check-GUID-Partition-Table" class="headerlink" title="Check GUID Partition Table"></a>Check GUID Partition Table</h2><p>In <code>Disk Management</code>, check the property of disk. If it’s not <code>GUID Partition Table (GPT)</code>, you need to open <code>cmd</code> and input</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cmd">diskpart<br><br>list disk<br></code></pre></td></tr></table></figure>
+
+<p>then select disk and convert:</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cmd">select disk=<span class="hljs-number">0</span><br><br><span class="hljs-built_in">convert</span> gpt<br><br>list disk<br></code></pre></td></tr></table></figure>
+
+<p>It’s UEFI in my laptop, no need to worry.</p>
+<h2 id="Trun-off-Bitlocker"><a href="#Trun-off-Bitlocker" class="headerlink" title="Trun off Bitlocker"></a>Trun off Bitlocker</h2><p>Press <code>Win+I</code> to open settings, and turn off the bitlocker</p>
+<h2 id="Prepare-Ubuntu-boot-drive"><a href="#Prepare-Ubuntu-boot-drive" class="headerlink" title="Prepare Ubuntu boot drive"></a>Prepare Ubuntu boot drive</h2><ol>
+<li><p>Download <a target="_blank" rel="noopener" href="https://ubuntu.com/download/desktop#how-to-install-NobleNumbat">Ubuntu</a> iso, for example, I choose Ubuntu 24.04.1 LTS.</p>
 </li>
-<li><p>However, if you can not get access to Docker Hub, you have two solution:</p>
+<li><p>Create a bootable USB flash drive with <a target="_blank" rel="noopener" href="https://etcher.balena.io/">balenaEtcher</a>.</p>
+<p> I tried similar software, Rufus, but can not find the ubuntu boot option in bios, probably due the missing UEFI file.</p>
+</li>
+</ol>
+<h2 id="Spare-memory-space-for-Ubuntu"><a href="#Spare-memory-space-for-Ubuntu" class="headerlink" title="Spare memory space for Ubuntu"></a>Spare memory space for Ubuntu</h2><ol>
+<li><p>Install <a target="_blank" rel="noopener" href="https://www.diskgenius.com/free.php">DiskGenius</a></p>
+</li>
+<li><p>Open DiskGenius, and select a volume, for example <code>D</code>, and choose <code>compress volume</code>, adjust the volume size to get freee space. Here I spare 300 GB spaces for Ubuntu.</p>
+</li>
+</ol>
+<h2 id="Modify-UEFI-and-MSR-partition"><a href="#Modify-UEFI-and-MSR-partition" class="headerlink" title="Modify UEFI and MSR partition"></a>Modify UEFI and MSR partition</h2><p><strong>This doesn’t seem to be a necessary step, because after I finished the installation, the new UEFI took up only 64 MB, less than the original 100 MB</strong></p>
+<p>But just for in case, I enlarged the UEFI volume to 400 MB.</p>
+<p>It comes with following steps:</p>
+<ol>
+<li><p>remember the start and end indices of each partitions</p>
+</li>
+<li><p>backup the UEFI files</p>
+</li>
+<li><p>modify the volume of Windows parition to spare additional 300 MB spaces in font of the windows partition</p>
+</li>
+<li><p>delete and recreate the UEFI and MSR partitions</p>
+</li>
+<li><p>modify the start and end indices of UEFI and MSR partitions</p>
+<p> For UEFI, the start is same as it was before, and the end is extended to include additional 300 MB spaces.</p>
+<p> And the MSR is using the spaces between UEFI and Windos partition, mantianed to be 16 MB in my case.</p>
+</li>
+</ol>
+<p><strong>If you mistakenly delete the UEFI and MSR files without backup, you need to reboot from a PE system with DiskGenius, regenerate the UEFI and MSR partition, and use the <code>Windows UEFI recovery</code> tools to recover it.</strong></p>
+<h2 id="Install-Ubuntu"><a href="#Install-Ubuntu" class="headerlink" title="Install Ubuntu"></a>Install Ubuntu</h2><ol>
+<li><p>swith to Bios mode</p>
+<ul>
+<li><p>Directly use the <code>Adanced Startup</code> in the Windows Settings</p>
+</li>
+<li><p>Or restart the mechine and press hotkey (<code>ESC</code> in my case)</p>
 </li>
 </ul>
-<ol>
-<li><p>find an <a target="_blank" rel="noopener" href="https://github.com/dongyubin/DockerHub?tab=readme-ov-file">available mirror</a>, for example, use:</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker pull dockerpull.org/mzz2017/v2raya<br></code></pre></td></tr></table></figure>
 </li>
-<li><p>manually download the image, and load it:</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker load -i v2raya.tar<br></code></pre></td></tr></table></figure></li>
+<li><p>choose <code>boot from usb drive</code>, to boot and install Ubuntu.</p>
+</li>
 </ol>
-<h2 id="Run-image"><a href="#Run-image" class="headerlink" title="Run image"></a>Run image</h2><p>Using a iptables legacy backend and xray kernel:</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker run -d <br>--restart=always \<br>--privileged \<br>--network=host \<br>--name v2raya \<br>-e V2RAYA_LOG_FILE=/tmp/v2raya.<span class="hljs-built_in">log</span> \<br>-e V2RAYA_NFTABLES_SUPPORT=off \<br>-e IPTABLES_MODE=legacy \<br>-v /lib/modules:/lib/modules:ro \<br>-v /etc/resolv.conf:/etc/resolv.conf \<br>-v /etc/v2raya:/etc/v2raya \<br>mzz2017/v2raya<br></code></pre></td></tr></table></figure>
+<h2 id="Install-grub2-themes-Optional"><a href="#Install-grub2-themes-Optional" class="headerlink" title="Install grub2 themes (Optional)"></a>Install grub2 themes (Optional)</h2><p>We can install grub themes to change the start up menu:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/vinceliuice/grub2-themes.git<br></code></pre></td></tr></table></figure>
 
-<p>You then can open <a href="localhost:2017">localhost:2017</a> to use v2rayA in web-gui.</p>
-<h2 id="Check-Status"><a href="#Check-Status" class="headerlink" title="Check Status"></a>Check Status</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker container stats v2raya<br></code></pre></td></tr></table></figure>
+<p>For exampel, I use the <code>Whitesur</code>:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> ./install.sh -t whitesur -c 2880x1800 -b<br></code></pre></td></tr></table></figure>
 
-<h2 id="Reomve"><a href="#Reomve" class="headerlink" title="Reomve"></a>Reomve</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker container stop v2raya<br><span class="hljs-built_in">sudo</span> docker container <span class="hljs-built_in">rm</span> v2raya<br></code></pre></td></tr></table></figure>
+<p>To uninstall:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> ./install.sh -r -t whitesur<br></code></pre></td></tr></table></figure>
 
 
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://v2raya.org/en/docs/prologue/installation/docker/">https://v2raya.org/en/docs/prologue/installation/docker/</a></p>
+
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/2401_84064328/article/details/137232169">https://blog.csdn.net/2401_84064328/article/details/137232169</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ay2021/p/15151630.html">https://www.cnblogs.com/ay2021/p/15151630.html</a></p>
 
                 
               </div>
@@ -337,9 +381,7 @@
       
         <a href="/tags/Ubuntu/" class="print-no-link">#Ubuntu</a>
       
-        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
-      
-        <a href="/tags/Network/" class="print-no-link">#Network</a>
+        <a href="/tags/Windows/" class="print-no-link">#Windows</a>
       
     </div>
   
@@ -351,8 +393,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Install v2rayA</div>
-      <div>https://dyliu0312.github.io/2024/12/01/Install-v2rayA/</div>
+      <div>Install Ubuntu on Windows laptop (dual system)</div>
+      <div>https://dyliu0312.github.io/2024/12/01/Install-Ubuntu-on-Windows-laptop-dual-system/</div>
     </div>
     <div class="license-meta">
       
@@ -396,18 +438,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/01/Install-Ubuntu-on-Windows-laptop-dual-system/" title="Install Ubuntu on Windows laptop (dual system)">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Install Ubuntu on Windows laptop (dual system)</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/12/01/Install-Docker-on-Ubuntu/" title="Install Docker on Ubuntu">
-                        <span class="hidden-mobile">Install Docker on Ubuntu</span>
+                      <a href="/2024/12/01/Install-v2rayA/" title="Install v2rayA">
+                        <span class="hidden-mobile">Install v2rayA</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
