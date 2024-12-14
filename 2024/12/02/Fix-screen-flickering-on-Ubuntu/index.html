@@ -27,12 +27,14 @@
 <meta property="og:description" content="Fix screen flickering on Ubuntu Processor: AMD Ryzen™ 7 7840HS w&#x2F; Radeon™ 780M Graphics × 16  Modify the grubRun  1sudo vi &#x2F;etc&#x2F;default&#x2F;grub and add amdgpu.sg_display&#x3D;0 in line GRUB_CMDLINE_LINUX">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-12-01T16:05:20.000Z">
-<meta property="article:modified_time" content="2024-12-01T16:25:31.674Z">
+<meta property="article:modified_time" content="2024-12-14T15:43:12.714Z">
 <meta property="article:author" content="dyliu">
 <meta property="article:tag" content="Ubuntu">
 <meta property="article:tag" content="AMD">
 <meta name="twitter:card" content="summary_large_image">
   
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
   
   
   <title>Fix screen flickering on Ubuntu - dyliu&#39;s Blog</title>
@@ -289,7 +291,7 @@
 <p>Then </p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> update-grub<br>reboot<br></code></pre></td></tr></table></figure>
 
-<h2 id="Trun-language-into-English-do-not-using-Chinese"><a href="#Trun-language-into-English-do-not-using-Chinese" class="headerlink" title="Trun language into English, do not using Chinese."></a>Trun language into English, do not using Chinese.</h2><p>After fixed the flicking problem through aforementioned method, I found it flickering again when swith the language into Chinese. </p>
+<h2 id="Turn-language-into-English-do-not-using-Chinese"><a href="#Turn-language-into-English-do-not-using-Chinese" class="headerlink" title="Turn language into English, do not using Chinese."></a>Turn language into English, do not using Chinese.</h2><p>After fixed the flicking problem through aforementioned method, I found it flickering again when swith the language into Chinese. </p>
 <h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://community.frame.work/t/tracking-screen-flashing-partially-white-on-framework-13-amd-ubuntu-22-04/40626?page=2">https://community.frame.work/t/tracking-screen-flashing-partially-white-on-framework-13-amd-ubuntu-22-04/40626?page=2</a><br><a target="_blank" rel="noopener" href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2064906/">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2064906/</a></p>
 
                 
@@ -383,6 +385,12 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2024/12/14/Fix-Unable-to-acess-location-error-when-mount-disk/" title="Fix &#39;Unable-to-acess-location&#39; error when mount disk">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Fix &#39;Unable-to-acess-location&#39; error when mount disk</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
@@ -403,6 +411,32 @@
   
     <article id="comments" lazyload>
       
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'dyliu0312/dyliu0312.github.io.git');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
 
     </article>
   
@@ -503,6 +537,32 @@
        <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
     </div>
   
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        Views: 
+        <span id="busuanzi_value_site_pv"></span>
+        
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        Visitors: 
+        <span id="busuanzi_value_site_uv"></span>
+        
+      </span>
+    
+    
+
+  
+
+</div>
+
   
   
 </div>
@@ -648,6 +708,8 @@
   <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
 
 
 
