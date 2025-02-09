@@ -19,28 +19,24 @@
   <meta name="author" content="dyliu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Fix “Unable to acess location” error when mount disk Enviroment: Ubuntu 24.4 and Windows 11 (Dual system)  In ubuntu 24.4, there is a desktop shortcut on the hover to quickly mount disk and open nauti">
+    <meta name="description" content="Fix git pull failProblemOne day, I suddenly found that I can not access to my repo directly using git push command. I tried check connection using 1ssh -vT git@github.com everything went well. So I th">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Fix &#39;Unable-to-acess-location&#39; error when mount disk">
-<meta property="og:url" content="https://dyliu0312.github.io/2024/12/14/Fix-Unable-to-acess-location-error-when-mount-disk/index.html">
+<meta property="og:title" content="Fix-git-pull-fail">
+<meta property="og:url" content="https://dyliu0312.github.io/2025/02/09/Fix-git-pull-fail/index.html">
 <meta property="og:site_name" content="dyliu&#39;s Blog">
-<meta property="og:description" content="Fix “Unable to acess location” error when mount disk Enviroment: Ubuntu 24.4 and Windows 11 (Dual system)  In ubuntu 24.4, there is a desktop shortcut on the hover to quickly mount disk and open nauti">
+<meta property="og:description" content="Fix git pull failProblemOne day, I suddenly found that I can not access to my repo directly using git push command. I tried check connection using 1ssh -vT git@github.com everything went well. So I th">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dyliu0312.github.io/img/access_error.png">
-<meta property="article:published_time" content="2024-12-14T13:51:09.000Z">
-<meta property="article:modified_time" content="2025-01-13T12:41:05.195Z">
+<meta property="article:published_time" content="2025-02-09T01:57:04.000Z">
+<meta property="article:modified_time" content="2025-02-09T02:31:47.881Z">
 <meta property="article:author" content="dyliu">
-<meta property="article:tag" content="Ubuntu">
-<meta property="article:tag" content="Windows">
-<meta property="article:tag" content="Disk">
+<meta property="article:tag" content="GitHub">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://dyliu0312.github.io/img/access_error.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Fix &#39;Unable-to-acess-location&#39; error when mount disk - dyliu&#39;s Blog</title>
+  <title>Fix-git-pull-fail - dyliu&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -206,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Fix &#39;Unable-to-acess-location&#39; error when mount disk"></span>
+            <span id="subtitle" data-typed-text="Fix-git-pull-fail"></span>
           
         </div>
 
@@ -217,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-14 21:51" pubdate>
-          December 14, 2024 pm
+        <time datetime="2025-02-09 09:57" pubdate>
+          February 9, 2025 am
         </time>
       </span>
     
@@ -229,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          84 words
+          72 words
         
       </span>
     
@@ -277,46 +273,29 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Fix &#39;Unable-to-acess-location&#39; error when mount disk</h1>
+            <h1 id="seo-header">Fix-git-pull-fail</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Fix-“Unable-to-acess-location”-error-when-mount-disk"><a href="#Fix-“Unable-to-acess-location”-error-when-mount-disk" class="headerlink" title="Fix “Unable to acess location” error when mount disk"></a>Fix “Unable to acess location” error when mount disk</h1><ul>
-<li>Enviroment: Ubuntu 24.4 and Windows 11 (Dual system)</li>
-</ul>
-<p>In ubuntu 24.4, there is a desktop shortcut on the hover to quickly <code>mount</code> disk and open <code>nautilus</code> with a simple click. </p>
-<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>However, I found a error issued recently:<br><img src="/img/access_error.png" srcset="/img/loading.gif" lazyload alt="Access Error"><br>when I tried to use the hover shortcut to mount my Data partition, which was originally belong to Windows system with NTFS type.</p>
-<h2 id="Cause"><a href="#Cause" class="headerlink" title="Cause"></a>Cause</h2><ol>
-<li><p>Windows Fast Boot:<br>It’s probally due the “Fast Boot” of Windows still occupying the disk.</p>
+                <h1 id="Fix-git-pull-fail"><a href="#Fix-git-pull-fail" class="headerlink" title="Fix git pull fail"></a>Fix git pull fail</h1><h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>One day, I suddenly found that I can not access to my repo directly using <code>git push</code> command.</p>
+<p>I tried check connection using</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh -vT git@github.com<br></code></pre></td></tr></table></figure>
+<p>everything went well.</p>
+<p>So I think the <strong>ssh key may have been specified incorrectly</strong>, while directly using <code>git push</code> (I also got other ssh keys for other github repositories, which may conflict).</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><ol>
+<li><p>generate a new ssh key pair</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh-keygen -t ed25519 -C <span class="hljs-string">&quot;your_email@example.com&quot;</span><br></code></pre></td></tr></table></figure>
+<p>and rename it (e.g. <code>id_ed25519_github</code>) to distinguish it from other keys.</p>
 </li>
-<li><p>Drive errors:<br>There are some drive errors need to be fixed.</p>
-</li>
+<li><p>change the ssh config</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vi .ssh/config<br></code></pre></td></tr></table></figure>
+<p>to point the right key</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">Host github-repo<br>	HostName github.com<br>	IdentityFile=/home/dyliu/.ssh/id_ed25519_github<br></code></pre></td></tr></table></figure></li>
+<li><p>use alternative way to pull or push repo</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git push git@github-repo:yourname/your-repo.git<br></code></pre></td></tr></table></figure></li>
 </ol>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Turn-off-Fast-Boot"><a href="#Turn-off-Fast-Boot" class="headerlink" title="Turn off Fast Boot"></a>Turn off Fast Boot</h3><ol>
-<li>Open “Control Panel“.</li>
-<li>Click “Power Options.”</li>
-<li>Click the “Choose what the power buttons do” link.</li>
-<li>Press the “Change settings that are currently unavailable” link.</li>
-<li>Uncheck the “Turn on fast startup” checkbox.</li>
-<li>Click the “Save changes” button.</li>
-</ol>
-<h3 id="Fix-drive"><a href="#Fix-drive" class="headerlink" title="Fix drive"></a>Fix drive</h3><p>I tried but failed to use <code>ntfsfix</code> to fix it in Ubuntu, because the Data partition is belong to Windows system.</p>
-<p>So we have to fix it in Windows system.</p>
-<ol>
-<li>Boot to Windows system</li>
-<li>Open <code>cmd</code> (or <code>powershell</code>)</li>
-<li>Run:<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmd"><span class="hljs-built_in">chkdsk</span> /f d:<br></code></pre></td></tr></table></figure></li>
-<li>Reboot Windows</li>
-</ol>
-<p>After that, reboot Ubuntu and free to go.</p>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://askubuntu.com/a/1492976">https://askubuntu.com/a/1492976</a></li>
-<li><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/a/781599">https://unix.stackexchange.com/a/781599</a></li>
-<li><a target="_blank" rel="noopener" href="https://linux.cn/article-2045-1.html">https://linux.cn/article-2045-1.html</a></li>
-<li><a target="_blank" rel="noopener" href="https://windowsloop.com/how-to-turn-off-fast-startup-in-windows-10/">https://windowsloop.com/how-to-turn-off-fast-startup-in-windows-10/</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.howtogeek.com/1033/how-to-use-chkdsk-on-windows/">https://www.howtogeek.com/1033/how-to-use-chkdsk-on-windows/</a></li>
-</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/managing-deploy-keys">https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/managing-deploy-keys</a><br><a target="_blank" rel="noopener" href="https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/using-ssh-agent-forwarding">https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/using-ssh-agent-forwarding</a></p>
 
                 
               </div>
@@ -350,11 +329,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Ubuntu/" class="print-no-link">#Ubuntu</a>
-      
-        <a href="/tags/Windows/" class="print-no-link">#Windows</a>
-      
-        <a href="/tags/Disk/" class="print-no-link">#Disk</a>
+        <a href="/tags/GitHub/" class="print-no-link">#GitHub</a>
       
     </div>
   
@@ -366,8 +341,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Fix &#39;Unable-to-acess-location&#39; error when mount disk</div>
-      <div>https://dyliu0312.github.io/2024/12/14/Fix-Unable-to-acess-location-error-when-mount-disk/</div>
+      <div>Fix-git-pull-fail</div>
+      <div>https://dyliu0312.github.io/2025/02/09/Fix-git-pull-fail/</div>
     </div>
     <div class="license-meta">
       
@@ -379,7 +354,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>December 14, 2024</div>
+          <div>February 9, 2025</div>
         </div>
       
       
@@ -411,18 +386,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/02/09/Fix-git-pull-fail/" title="Fix-git-pull-fail">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Fix-git-pull-fail</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/12/02/Fix-screen-flickering-on-Ubuntu/" title="Fix screen flickering on Ubuntu">
-                        <span class="hidden-mobile">Fix screen flickering on Ubuntu</span>
+                      <a href="/2024/12/14/Fix-Unable-to-acess-location-error-when-mount-disk/" title="Fix &#39;Unable-to-acess-location&#39; error when mount disk">
+                        <span class="hidden-mobile">Fix &#39;Unable-to-acess-location&#39; error when mount disk</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
