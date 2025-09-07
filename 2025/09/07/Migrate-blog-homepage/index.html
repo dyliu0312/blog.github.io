@@ -19,26 +19,25 @@
   <meta name="author" content="dyliu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Install v2rayADownlaod image The easiest way to download iamge is though:   1docker pull mzz2017&#x2F;v2raya  However, if you can not get access to Docker Hub, you have two solution:    find an available m">
+    <meta name="description" content="Migrate blog homepageI want to migrate my blog homepage from dyliu0312.github.io to sub page (or folder), e.g. dyliu0312.github.io&#x2F;blog&#x2F;, so that I can use that domain name for my personal website and">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Install v2rayA">
-<meta property="og:url" content="https://dyliu0312.github.io/blog/2024/12/01/Install-v2rayA/index.html">
+<meta property="og:title" content="Migrate blog homepage">
+<meta property="og:url" content="https://dyliu0312.github.io/blog/2025/09/07/Migrate-blog-homepage/index.html">
 <meta property="og:site_name" content="dyliu&#39;s Blog">
-<meta property="og:description" content="Install v2rayADownlaod image The easiest way to download iamge is though:   1docker pull mzz2017&#x2F;v2raya  However, if you can not get access to Docker Hub, you have two solution:    find an available m">
+<meta property="og:description" content="Migrate blog homepageI want to migrate my blog homepage from dyliu0312.github.io to sub page (or folder), e.g. dyliu0312.github.io&#x2F;blog&#x2F;, so that I can use that domain name for my personal website and">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-12-01T10:03:25.000Z">
-<meta property="article:modified_time" content="2024-12-14T16:09:22.334Z">
+<meta property="article:published_time" content="2025-09-07T12:58:18.000Z">
+<meta property="article:modified_time" content="2025-09-07T13:27:29.401Z">
 <meta property="article:author" content="dyliu">
-<meta property="article:tag" content="Ubuntu">
-<meta property="article:tag" content="Docker">
-<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="GitHub">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Install v2rayA - dyliu&#39;s Blog</title>
+  <title>Migrate blog homepage - dyliu&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -204,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Install v2rayA"></span>
+            <span id="subtitle" data-typed-text="Migrate blog homepage"></span>
           
         </div>
 
@@ -215,8 +214,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-01 18:03" pubdate>
-          December 1, 2024 pm
+        <time datetime="2025-09-07 20:58" pubdate>
+          September 7, 2025 pm
         </time>
       </span>
     
@@ -227,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          62 words
+          53 words
         
       </span>
     
@@ -275,35 +274,37 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Install v2rayA</h1>
+            <h1 id="seo-header">Migrate blog homepage</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Install-v2rayA"><a href="#Install-v2rayA" class="headerlink" title="Install v2rayA"></a>Install <a target="_blank" rel="noopener" href="https://github.com/v2rayA/v2rayA?tab=readme-ov-file">v2rayA</a></h1><h2 id="Downlaod-image"><a href="#Downlaod-image" class="headerlink" title="Downlaod image"></a>Downlaod image</h2><ul>
-<li><p>The easiest way to download iamge is though:</p>
-  <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull mzz2017/v2raya<br></code></pre></td></tr></table></figure>
+                <h1 id="Migrate-blog-homepage"><a href="#Migrate-blog-homepage" class="headerlink" title="Migrate blog homepage"></a>Migrate blog homepage</h1><p>I want to migrate my blog homepage from <code>dyliu0312.github.io</code> to sub page (or folder), e.g. <code>dyliu0312.github.io/blog/</code>, so that I can use that domain name for my personal website and also blog.</p>
+<h2 id="1-Rename-the-github-repository"><a href="#1-Rename-the-github-repository" class="headerlink" title="1. Rename the github repository"></a>1. Rename the github repository</h2><ul>
+<li><p>Navigate to blog repository on GitHub</p>
 </li>
-<li><p>However, if you can not get access to Docker Hub, you have two solution:</p>
+<li><p>Go to the “Settings” tab.</p>
+</li>
+<li><p>Under the “General” section, find the “Repository name” field and click “Rename”.</p>
+</li>
+<li><p>Enter the new name, e.g. blog, and click “Rename”.</p>
 </li>
 </ul>
-<ol>
-<li><p>find an <a target="_blank" rel="noopener" href="https://github.com/dongyubin/DockerHub?tab=readme-ov-file">available mirror</a>, for example, use:</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker pull dockerpull.org/mzz2017/v2raya<br></code></pre></td></tr></table></figure>
+<h2 id="2-Change-the-repository-URL-in-the-config-yml-file"><a href="#2-Change-the-repository-URL-in-the-config-yml-file" class="headerlink" title="2. Change the repository URL in the _config.yml file"></a>2. Change the repository URL in the _config.yml file</h2><ul>
+<li><p>Open the <code>_config.yml</code> file in the root directory of your Hexo blog.</p>
 </li>
-<li><p>manually download the image, and load it:</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker load -i v2raya.tar<br></code></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="Run-image"><a href="#Run-image" class="headerlink" title="Run image"></a>Run image</h2><p>Using a iptables legacy backend and xray kernel:</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker run -d <br>--restart=always \<br>--privileged \<br>--network=host \<br>--name v2raya \<br>-e V2RAYA_LOG_FILE=/tmp/v2raya.<span class="hljs-built_in">log</span> \<br>-e V2RAYA_NFTABLES_SUPPORT=off \<br>-e IPTABLES_MODE=legacy \<br>-v /lib/modules:/lib/modules:ro \<br>-v /etc/resolv.conf:/etc/resolv.conf \<br>-v /etc/v2raya:/etc/v2raya \<br>mzz2017/v2raya<br></code></pre></td></tr></table></figure>
-
-<p>You then can open <a href="localhost:2017">localhost:2017</a> to use v2rayA in web-gui.</p>
-<h2 id="Check-Status"><a href="#Check-Status" class="headerlink" title="Check Status"></a>Check Status</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker container stats v2raya<br></code></pre></td></tr></table></figure>
-
-<h2 id="Reomve"><a href="#Reomve" class="headerlink" title="Reomve"></a>Reomve</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> docker container stop v2raya<br><span class="hljs-built_in">sudo</span> docker container <span class="hljs-built_in">rm</span> v2raya<br></code></pre></td></tr></table></figure>
-
-
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://v2raya.org/en/docs/prologue/installation/docker/">https://v2raya.org/en/docs/prologue/installation/docker/</a></p>
+<li><p>Locate the <code>url</code> field and change it to the new URL, e.g. <code>https://dyliu0312.github.io/blog/</code>.</p>
+</li>
+<li><p>Change the <code>root</code> field to <code>/blog/</code>.</p>
+</li>
+<li><p>Locate the deployment section and change the <code>repo</code> field to the new repository URL, e.g. <code>https://github.com/dyliu0312/blog.git</code>.</p>
+</li>
+<li><p>Save the changes and commit.</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo c<br>hexo g<br>hexo d<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li>Google Gemini</li>
+</ul>
 
                 
               </div>
@@ -312,36 +313,13 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/Install/" class="category-chain-item">Install</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/blog/tags/Ubuntu/" class="print-no-link">#Ubuntu</a>
+        <a href="/blog/tags/Hexo/" class="print-no-link">#Hexo</a>
       
-        <a href="/blog/tags/Docker/" class="print-no-link">#Docker</a>
-      
-        <a href="/blog/tags/Network/" class="print-no-link">#Network</a>
+        <a href="/blog/tags/GitHub/" class="print-no-link">#GitHub</a>
       
     </div>
   
@@ -353,8 +331,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Install v2rayA</div>
-      <div>https://dyliu0312.github.io/blog/2024/12/01/Install-v2rayA/</div>
+      <div>Migrate blog homepage</div>
+      <div>https://dyliu0312.github.io/blog/2025/09/07/Migrate-blog-homepage/</div>
     </div>
     <div class="license-meta">
       
@@ -366,7 +344,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>December 1, 2024</div>
+          <div>September 7, 2025</div>
         </div>
       
       
@@ -398,18 +376,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/blog/2024/12/01/Install-Ubuntu-on-Windows-laptop-dual-system/" title="Install Ubuntu on Windows laptop (dual system)">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Install Ubuntu on Windows laptop (dual system)</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/blog/2024/12/01/Install-Docker-on-Ubuntu/" title="Install Docker on Ubuntu">
-                        <span class="hidden-mobile">Install Docker on Ubuntu</span>
+                      <a href="/blog/2025/02/09/Fix-git-pull-fail/" title="Fix git pull failure">
+                        <span class="hidden-mobile">Fix git pull failure</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
