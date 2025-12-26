@@ -4,6 +4,56 @@
   
   
   <entry>
+    <title>Debug Overleaf Error: can&#39;t create new project/upload files</title>
+    <link href="/blog.github.io/2025/12/26/Debug-Overleaf-Error-can-t-create-new-project-upload-files/"/>
+    <url>/blog.github.io/2025/12/26/Debug-Overleaf-Error-can-t-create-new-project-upload-files/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Debugging-Overleaf-Fixing-“Create-Project”-File-Upload-Failures"><a href="#Debugging-Overleaf-Fixing-“Create-Project”-File-Upload-Failures" class="headerlink" title="Debugging Overleaf: Fixing “Create Project” &amp; File Upload Failures"></a>Debugging Overleaf: Fixing “Create Project” &amp; File Upload Failures</h1><p>A few days after <a href="">fixed the MongoDB Error</a>, I suddenly found that creating new projects or uploading files would consistently fail with an <strong>HTTP 500 error</strong> from the web service.</p><p>Frontend logs gave little detail, but the <code>history-v1</code> service logs revealed the root cause:</p><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">EACCES:</span> permission denied, mkdir <span class="hljs-keyword">/var/</span>lib<span class="hljs-keyword">/overleaf/</span>data<span class="hljs-keyword">/history/</span>overleaf-chunks/...<br></code></pre></td></tr></table></figure><p>Overleaf couldn’t create directories needed to store project history. </p><h3 id="The-Cause"><a href="#The-Cause" class="headerlink" title="The Cause"></a>The Cause</h3><p>The directory <code>/var/lib/overleaf/</code> inside docker had mixed ownership—some files belonged to <code>www-data:www-data</code>, others to my local user (<code>dyliu:dyliu</code>). This broke the write permissions required during project initialization.</p><h3 id="The-Fix"><a href="#The-Fix" class="headerlink" title="The Fix"></a>The Fix</h3><p>Enter the container and correct permissions:</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> -it sharelatex bash<br><span class="hljs-built_in">chown</span> -R www-data:www-data /var/lib/overleaf<br><span class="hljs-built_in">chmod</span> -R u+rwX /var/lib/overleaf<br><span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure><p>Project creation and uploads worked immediately after.</p><p>We can further test it by restarting the services:</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/stop<br>bin/up -d<br></code></pre></td></tr></table></figure><p>Everything works great!</p><h3 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h3><p><strong>HTTP 500 errors in Docker often point to volume permission issues, not code bugs.</strong><br>For Overleaf specifically, writable history storage is essential for project creation. Checking volume ownership early can save significant debugging time.</p><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>ChatGPT<br>Deepseek</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Fix problem</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Docker</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Debug Overleaf Error: MongoDB</title>
+    <link href="/blog.github.io/2025/12/26/Debug-Overleaf-Error-MongoDB/"/>
+    <url>/blog.github.io/2025/12/26/Debug-Overleaf-Error-MongoDB/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Debugging-Overleaf-Fixing-MongoNetworkError-Connection-Refused"><a href="#Debugging-Overleaf-Fixing-MongoNetworkError-Connection-Refused" class="headerlink" title="Debugging Overleaf: Fixing MongoNetworkError Connection Refused"></a>Debugging Overleaf: Fixing MongoNetworkError Connection Refused</h1><h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>When running Overleaf locally via Docker (deplolyed through overleaf toolkit), the service suddenly became inaccessible due to MongoDB connection failures. Investigation revealed corrupted database files preventing MongoDB from starting.<br><img src="/blog.github.io/img/mongo_error.png" alt="Mongo Error"></p><h2 id="Solution-Database-Repair-Recovery"><a href="#Solution-Database-Repair-Recovery" class="headerlink" title="Solution: Database Repair &amp; Recovery"></a>Solution: Database Repair &amp; Recovery</h2><h3 id="1-Backup-Original-Data"><a href="#1-Backup-Original-Data" class="headerlink" title="1. Backup Original Data"></a>1. Backup Original Data</h3><p>Before any repair attempts, always backup your data:</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">tar -czvf backup-data.tar.gz data/*<br></code></pre></td></tr></table></figure><h3 id="2-Start-MongoDB-Container"><a href="#2-Start-MongoDB-Container" class="headerlink" title="2. Start MongoDB Container"></a>2. Start MongoDB Container</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/docker-compose up -d mongo<br></code></pre></td></tr></table></figure><h3 id="3-Enter-Container-Repair-Database"><a href="#3-Enter-Container-Repair-Database" class="headerlink" title="3. Enter Container &amp; Repair Database"></a>3. Enter Container &amp; Repair Database</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> -it mongo bash<br>mongod --repair --dbpath /data/db 2&gt;&amp;1<br></code></pre></td></tr></table></figure><h3 id="4-Backup-Repaired-Data"><a href="#4-Backup-Repaired-Data" class="headerlink" title="4. Backup Repaired Data"></a>4. Backup Repaired Data</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">mongodump --out /data/db/backup<br><span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure><h3 id="5-Transfer-Backup-Locally"><a href="#5-Transfer-Backup-Locally" class="headerlink" title="5. Transfer Backup Locally"></a>5. Transfer Backup Locally</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">cp</span> mongo:/data/db/backup ./backup_mongodb<br>docker stop mongo<br></code></pre></td></tr></table></figure><h3 id="6-Replace-Corrupted-Data"><a href="#6-Replace-Corrupted-Data" class="headerlink" title="6. Replace Corrupted Data"></a>6. Replace Corrupted Data</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mv</span> ./data/mongo ./data/mongo_bk<br><span class="hljs-built_in">mkdir</span> ./data/mongo<br></code></pre></td></tr></table></figure><h3 id="7-Temporary-Fix-for-Replica-Set"><a href="#7-Temporary-Fix-for-Replica-Set" class="headerlink" title="7. Temporary Fix for Replica Set"></a>7. Temporary Fix for Replica Set</h3><p>Edit <code>lib/docker-compose.mongo.yml</code>:</p><ul><li>Change: <code>command: mongod --replSet overleaf --bind_ip_all</code></li><li>To: <code>command: mongod --bind_ip_all</code></li></ul><h3 id="8-Restart-MongoDB"><a href="#8-Restart-MongoDB" class="headerlink" title="8. Restart MongoDB"></a>8. Restart MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/docker-compose up -d mongo<br></code></pre></td></tr></table></figure><h3 id="9-Initialize-Replica-Set"><a href="#9-Initialize-Replica-Set" class="headerlink" title="9. Initialize Replica Set"></a>9. Initialize Replica Set</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> mongo mongosh --<span class="hljs-built_in">eval</span> <span class="hljs-string">&quot;rs.initiate()&quot;</span><br></code></pre></td></tr></table></figure><h3 id="10-Restore-Data"><a href="#10-Restore-Data" class="headerlink" title="10. Restore Data"></a>10. Restore Data</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">cp</span> ./mongodb_backup mongo:/tmp/backup1<br>docker <span class="hljs-built_in">exec</span> mongo mongorestore /tmp/backup1<br></code></pre></td></tr></table></figure><h3 id="11-Restore-Original-Configuration"><a href="#11-Restore-Original-Configuration" class="headerlink" title="11. Restore Original Configuration"></a>11. Restore Original Configuration</h3><p>Revert the change in <code>lib/docker-compose.mongo.yml</code> and start the overleaf:</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/docker-compose down mongo<br>bin/up -d<br></code></pre></td></tr></table></figure><h2 id="Key-Takeaways"><a href="#Key-Takeaways" class="headerlink" title="Key Takeaways"></a>Key Takeaways</h2><ol><li><strong>Always backup</strong> before database repairs</li><li>MongoDB’s <code>--repair</code> flag can fix file corruption issues</li><li>Replica set configurations may be lost during repair and need reinitialization</li><li>The repair process creates a clean database while preserving data integrity</li></ol><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>Deepseek</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Fix problem</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Docker</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>OpenVPN3 quick usage</title>
     <link href="/blog.github.io/2025/12/09/OpenVPN3-quick-usage/"/>
     <url>/blog.github.io/2025/12/09/OpenVPN3-quick-usage/</url>
@@ -203,9 +253,9 @@
     
     <tags>
       
-      <tag>Ubuntu</tag>
-      
       <tag>Docker</tag>
+      
+      <tag>Ubuntu</tag>
       
       <tag>Network</tag>
       
@@ -232,9 +282,9 @@
     
     <tags>
       
-      <tag>Ubuntu</tag>
-      
       <tag>Docker</tag>
+      
+      <tag>Ubuntu</tag>
       
     </tags>
     
@@ -261,11 +311,11 @@
     
     <tags>
       
+      <tag>Ubuntu</tag>
+      
       <tag>Hexo</tag>
       
       <tag>GitHub</tag>
-      
-      <tag>Ubuntu</tag>
       
     </tags>
     
