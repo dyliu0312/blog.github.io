@@ -19,15 +19,15 @@
   <meta name="author" content="dyliu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Debugging Overleaf: Fixing “Create Project” &amp; File Upload FailuresA few days after fixed the MongoDB Error, I suddenly found that creating new projects or uploading files would consistently fail w">
+    <meta name="description" content="Debugging Overleaf: Disk Space Caused MongoDB CorruptionThe Story of a Mysterious Login FailureIt started like any other day - I tried to log into my self-hosted Overleaf instance, but the page just h">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Debug Overleaf Error: can&#39;t create new project&#x2F;upload files">
-<meta property="og:url" content="https://dyliu0312.github.io/blog.github.io/2025/12/26/Debug-Overleaf-Error-can-t-create-new-project-upload-files/index.html">
+<meta property="og:title" content="Debug Overleaf Error: MongoDB v2">
+<meta property="og:url" content="https://dyliu0312.github.io/blog.github.io/2026/03/05/Debug-Overleaf-Error-MongoDB-v2/index.html">
 <meta property="og:site_name" content="dyliu&#39;s Blog">
-<meta property="og:description" content="Debugging Overleaf: Fixing “Create Project” &amp; File Upload FailuresA few days after fixed the MongoDB Error, I suddenly found that creating new projects or uploading files would consistently fail w">
+<meta property="og:description" content="Debugging Overleaf: Disk Space Caused MongoDB CorruptionThe Story of a Mysterious Login FailureIt started like any other day - I tried to log into my self-hosted Overleaf instance, but the page just h">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2025-12-26T10:39:44.000Z">
-<meta property="article:modified_time" content="2025-12-26T11:59:31.873Z">
+<meta property="article:published_time" content="2026-03-04T17:34:19.000Z">
+<meta property="article:modified_time" content="2026-03-04T18:24:04.045Z">
 <meta property="article:author" content="dyliu">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary_large_image">
@@ -36,7 +36,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Debug Overleaf Error: can&#39;t create new project/upload files - dyliu&#39;s Blog</title>
+  <title>Debug Overleaf Error: MongoDB v2 - dyliu&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Debug Overleaf Error: can&#39;t create new project/upload files"></span>
+            <span id="subtitle" data-typed-text="Debug Overleaf Error: MongoDB v2"></span>
           
         </div>
 
@@ -213,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-12-26 18:39" pubdate>
-          December 26, 2025 pm
+        <time datetime="2026-03-05 01:34" pubdate>
+          March 5, 2026 am
         </time>
       </span>
     
@@ -225,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          60 words
+          278 words
         
       </span>
     
@@ -236,7 +236,7 @@
         
         
         
-          1 mins
+          3 mins
         
       </span>
     
@@ -273,25 +273,72 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Debug Overleaf Error: can&#39;t create new project/upload files</h1>
+            <h1 id="seo-header">Debug Overleaf Error: MongoDB v2</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Debugging-Overleaf-Fixing-“Create-Project”-File-Upload-Failures"><a href="#Debugging-Overleaf-Fixing-“Create-Project”-File-Upload-Failures" class="headerlink" title="Debugging Overleaf: Fixing “Create Project” &amp; File Upload Failures"></a>Debugging Overleaf: Fixing “Create Project” &amp; File Upload Failures</h1><p>A few days after <a href="https://dyliu0312.github.io/blog.github.io/2025/12/26/Debug-Overleaf-Error-MongoDB/">fixed the MongoDB Error</a>, I suddenly found that creating new projects or uploading files would consistently fail with an <strong>HTTP 500 error</strong> from the web service.</p>
-<p>Frontend logs gave little detail, but the <code>history-v1</code> service logs revealed the root cause:</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">EACCES:</span> permission denied, mkdir <span class="hljs-keyword">/var/</span>lib<span class="hljs-keyword">/overleaf/</span>data<span class="hljs-keyword">/history/</span>overleaf-chunks/...<br></code></pre></td></tr></table></figure>
+                <h1 id="Debugging-Overleaf-Disk-Space-Caused-MongoDB-Corruption"><a href="#Debugging-Overleaf-Disk-Space-Caused-MongoDB-Corruption" class="headerlink" title="Debugging Overleaf: Disk Space Caused MongoDB Corruption"></a>Debugging Overleaf: Disk Space Caused MongoDB Corruption</h1><h2 id="The-Story-of-a-Mysterious-Login-Failure"><a href="#The-Story-of-a-Mysterious-Login-Failure" class="headerlink" title="The Story of a Mysterious Login Failure"></a>The Story of a Mysterious Login Failure</h2><p>It started like any other day - I tried to log into my self-hosted Overleaf instance, but the page just hung there. No error message, no timeout, just an endless loading spinner. Little did I know, this was the beginning of a journey through disk space issues, database corruption, and a race against time to recover precious data.</p>
+<h2 id="Checking-the-Logs"><a href="#Checking-the-Logs" class="headerlink" title="Checking the Logs"></a>Checking the Logs</h2><p>First stop - the container logs:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker-compose logs web | <span class="hljs-built_in">tail</span> -50<br></code></pre></td></tr></table></figure>
 
-<p>Overleaf couldn’t create directories needed to store project history. </p>
-<h3 id="The-Cause"><a href="#The-Cause" class="headerlink" title="The Cause"></a>The Cause</h3><p>The directory <code>/var/lib/overleaf/</code> inside docker had mixed ownership—some files belonged to <code>www-data:www-data</code>, others to my local user (<code>dyliu:dyliu</code>). This broke the write permissions required during project initialization.</p>
-<h3 id="The-Fix"><a href="#The-Fix" class="headerlink" title="The Fix"></a>The Fix</h3><p>Enter the container and correct permissions:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> -it sharelatex bash<br><span class="hljs-built_in">chown</span> -R www-data:www-data /var/lib/overleaf<br><span class="hljs-built_in">chmod</span> -R u+rwX /var/lib/overleaf<br><span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure>
-<p>Project creation and uploads worked immediately after.</p>
-<p>We can further test it by restarting the services:</p>
+<p>What I found was alarming:</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino">MongoServerSelectionError: connect ECONNREFUSED<br></code></pre></td></tr></table></figure>
+
+<p>Looking deeper into the logs, I spotted this critical error from Redis:</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">Write <span class="hljs-keyword">error</span> <span class="hljs-keyword">while</span> saving DB <span class="hljs-keyword">to</span> <span class="hljs-keyword">the</span> disk(rdbSaveRio): No <span class="hljs-literal">space</span> left <span class="hljs-keyword">on</span> device<br></code></pre></td></tr></table></figure>
+
+<p>MongoDB was corrupted due to insufficient disk space. After cleaning up some space, I tried to repeat what I had done last time (see <a href="https://dyliu0312.github.io/blog.github.io/2025/12/26/Debug-Overleaf-Error-MongoDB/">Debugging Overleaf: Fixing MongoNetworkError Connection Refused</a>).</p>
+<h2 id="The-Recovery-Journey"><a href="#The-Recovery-Journey" class="headerlink" title="The Recovery Journey"></a>The Recovery Journey</h2><h3 id="Phase-1-Backup"><a href="#Phase-1-Backup" class="headerlink" title="Phase 1: Backup"></a>Phase 1: Backup</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Stop all containers</span><br>docker-compose down<br><br><span class="hljs-comment"># Backup current data (just in case)</span><br><span class="hljs-built_in">cp</span> -r data/mongo data/mongo-backup-$(<span class="hljs-built_in">date</span> +%Y%m%d)<br></code></pre></td></tr></table></figure>
+
+<h3 id="Phase-2-Repair-and-Export-Database"><a href="#Phase-2-Repair-and-Export-Database" class="headerlink" title="Phase 2: Repair and Export Database"></a>Phase 2: Repair and Export Database</h3><p>I attempted to repair and export the database:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run --<span class="hljs-built_in">rm</span> -v $(<span class="hljs-built_in">pwd</span>)/data/mongo:/data/db -v $(<span class="hljs-built_in">pwd</span>)/bk-data-mongo:/backup mongo:8.0 bash -c <span class="hljs-string">&quot;</span><br><span class="hljs-string">  echo &#x27;Starting MongoDB in repair mode...&#x27; &amp;&amp;</span><br><span class="hljs-string">  mongod --repair --dbpath /data/db &amp;&amp;</span><br><span class="hljs-string">  echo &#x27;Exporting databases...&#x27; &amp;&amp;</span><br><span class="hljs-string">  mongodump --out /backup/mongo-recovery-\$(date +%Y%m%d-%H%M%S)</span><br><span class="hljs-string">&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>This worked! The repair fixed the corruption, and <code>mongodump</code> successfully exported the data to my <code>bk-data-mongo</code> directory.</p>
+<h3 id="Phase-3-Fresh-Database-Setup"><a href="#Phase-3-Fresh-Database-Setup" class="headerlink" title="Phase 3: Fresh Database Setup"></a>Phase 3: Fresh Database Setup</h3><p>I replaced the corrupted data with a fresh directory:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mv</span> data/mongo data/mongo_bk<br><span class="hljs-built_in">mkdir</span> data/mongo<br></code></pre></td></tr></table></figure>
+
+<p>Then started Overleaf to let it initialize a fresh database:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/up<br></code></pre></td></tr></table></figure>
+
+<p>After the homepage loaded successfully, I stopped it with Ctrl+C.</p>
+<h3 id="Phase-4-The-“NotPrimaryOrSecondary”-Trap"><a href="#Phase-4-The-“NotPrimaryOrSecondary”-Trap" class="headerlink" title="Phase 4: The “NotPrimaryOrSecondary” Trap"></a>Phase 4: The “NotPrimaryOrSecondary” Trap</h3><p>Based on my previous experience, I tried to initialize the replica set with:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> mongo mongosh --<span class="hljs-built_in">eval</span> <span class="hljs-string">&quot;rs.initiate()&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>But when I tried to restore data, I got:</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pf">Failed: (NotPrimaryOrSecondary) node is not <span class="hljs-keyword">in</span> primary or recovering <span class="hljs-keyword">state</span><br></code></pre></td></tr></table></figure>
+
+<p>The node wasn’t the primary, so it couldn’t accept write operations during restore.</p>
+<p>This is where I learned something crucial. Looking at Overleaf Toolkit’s <code>bin/up</code> script, I found this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">initiate_mongo_replica_set</span></span>() &#123;<br>  <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Initiating Mongo replica set...&quot;</span><br>  <span class="hljs-built_in">env</span> SKIP_WARNINGS=<span class="hljs-literal">true</span> <span class="hljs-string">&quot;<span class="hljs-variable">$TOOLKIT_ROOT</span>/bin/docker-compose&quot;</span> up -d mongo<br>  <span class="hljs-built_in">env</span> SKIP_WARNINGS=<span class="hljs-literal">true</span> <span class="hljs-string">&quot;<span class="hljs-variable">$TOOLKIT_ROOT</span>/bin/docker-compose&quot;</span> <span class="hljs-built_in">exec</span> -T mongo sh -c <span class="hljs-string">&#x27;</span><br><span class="hljs-string">    while ! &#x27;</span>\<span class="hljs-variable">$MONGOSH</span><span class="hljs-string">&#x27; --eval &quot;db.version()&quot; &gt; /dev/null; do</span><br><span class="hljs-string">      echo &quot;Waiting for Mongo...&quot;</span><br><span class="hljs-string">      sleep 1</span><br><span class="hljs-string">    done</span><br><span class="hljs-string">    &#x27;</span>\<span class="hljs-variable">$MONGOSH</span><span class="hljs-string">&#x27; --eval &quot;db.isMaster().primary || rs.initiate(&#123; _id: \&quot;overleaf\&quot;, members: [ &#123; _id: 0, host: \&quot;mongo:27017\&quot; &#125; ] &#125;)&quot; &gt; /dev/null&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>Key insight</strong>: Overleaf initializes the replica set with:</p>
+<ul>
+<li><strong>Name</strong>: <code>&quot;overleaf&quot;</code> (not the default)</li>
+<li><strong>Host</strong>: <code>&quot;mongo:27017&quot;</code> (the container service name, not localhost)</li>
+</ul>
+<p>This explained why my manual <code>rs.initiate()</code> didn’t work correctly!</p>
+<h3 id="Phase-5-Successful-Restoration"><a href="#Phase-5-Successful-Restoration" class="headerlink" title="Phase 5: Successful Restoration"></a>Phase 5: Successful Restoration</h3><p>With this knowledge, I restored the data properly:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Start MongoDB</span><br>bin/docker-compose up -d mongo<br><br><span class="hljs-comment"># Copy the backup into the container</span><br>docker <span class="hljs-built_in">cp</span> bk-data-mongo/mongo-recovery-*/ mongo:/tmp_bk<br><br><span class="hljs-comment"># Restore the data</span><br>docker <span class="hljs-built_in">exec</span> mongo mongorestore /tmp_bk<br></code></pre></td></tr></table></figure>
+
+<p>The restore showed partial success:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">2026</span>-<span class="hljs-number">03</span>-<span class="hljs-number">04</span>T16:<span class="hljs-number">55</span>:<span class="hljs-number">27</span>.<span class="hljs-number">524</span>+<span class="hljs-number">0000</span>    <span class="hljs-number">2130</span> document(s) restored successfully. <span class="hljs-number">74</span> document(s) failed to restore.<br></code></pre></td></tr></table></figure>
+
+<p>Most data was recovered! I then stopped MongoDB:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/docker-compose down mongo<br></code></pre></td></tr></table></figure>
+
+<h3 id="Phase-6-The-Final-Hurdle-“already-initialized”"><a href="#Phase-6-The-Final-Hurdle-“already-initialized”" class="headerlink" title="Phase 6: The Final Hurdle - “already initialized”"></a>Phase 6: The Final Hurdle - “already initialized”</h3><p>When I started everything back up:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/up -d<br></code></pre></td></tr></table></figure>
+
+<p>I got: <code>MongoServerError: already initialized</code></p>
+<p>The fix? Just stop and start again:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">bin/stop<br>bin/up -d<br></code></pre></td></tr></table></figure>
-<p>Everything works great!</p>
-<h3 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h3><p><strong>HTTP 500 errors in Docker often point to volume permission issues, not code bugs.</strong><br>For Overleaf specifically, writable history storage is essential for project creation. Checking volume ownership early can save significant debugging time.</p>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>ChatGPT<br>Deepseek</p>
+
+<p>This second start worked perfectly!</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li>DeepSeek AI assistance</li>
+<li>Previous blog: <a href="https://dyliu0312.github.io/blog.github.io/2025/12/26/Debug-Overleaf-Error-MongoDB/">Debugging Overleaf: Fixing MongoNetworkError Connection Refused</a></li>
+</ul>
 
                 
               </div>
@@ -337,8 +384,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Debug Overleaf Error: can&#39;t create new project/upload files</div>
-      <div>https://dyliu0312.github.io/blog.github.io/2025/12/26/Debug-Overleaf-Error-can-t-create-new-project-upload-files/</div>
+      <div>Debug Overleaf Error: MongoDB v2</div>
+      <div>https://dyliu0312.github.io/blog.github.io/2026/03/05/Debug-Overleaf-Error-MongoDB-v2/</div>
     </div>
     <div class="license-meta">
       
@@ -350,7 +397,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>December 26, 2025</div>
+          <div>March 5, 2026</div>
         </div>
       
       
@@ -382,18 +429,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/blog.github.io/2026/03/05/Debug-Overleaf-Error-MongoDB-v2/" title="Debug Overleaf Error: MongoDB v2">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Debug Overleaf Error: MongoDB v2</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/blog.github.io/2025/12/26/Debug-Overleaf-Error-MongoDB/" title="Debug Overleaf Error: MongoDB">
-                        <span class="hidden-mobile">Debug Overleaf Error: MongoDB</span>
+                      <a href="/blog.github.io/2025/12/26/Debug-Overleaf-Error-can-t-create-new-project-upload-files/" title="Debug Overleaf Error: can&#39;t create new project/upload files">
+                        <span class="hidden-mobile">Debug Overleaf Error: can&#39;t create new project/upload files</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
