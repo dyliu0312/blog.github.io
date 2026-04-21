@@ -19,15 +19,15 @@
   <meta name="author" content="dyliu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Fixing EasyConnect Startup Issues on UbuntuProblem: After installing EasyConnect on newer Ubuntu versions (20.04, 22.04, or later), the application often fails to launch.  1. Install EasyConnectDownlo">
+    <meta name="description" content="Fixing EasyConnect Startup Issues on UbuntuProblem: After installing EasyConnect on newer Ubuntu versions (20.04, 22.04, or later), the application often fails to launch.  Install EasyConnectDownload">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Fixing EasyConnect Startup Issues on Ubuntu">
 <meta property="og:url" content="https://dyliu0312.github.io/blog.github.io/2026/04/21/Fix-EasyConnect-Startup-Issues-on-Ubuntu/index.html">
 <meta property="og:site_name" content="dyliu&#39;s Blog">
-<meta property="og:description" content="Fixing EasyConnect Startup Issues on UbuntuProblem: After installing EasyConnect on newer Ubuntu versions (20.04, 22.04, or later), the application often fails to launch.  1. Install EasyConnectDownlo">
+<meta property="og:description" content="Fixing EasyConnect Startup Issues on UbuntuProblem: After installing EasyConnect on newer Ubuntu versions (20.04, 22.04, or later), the application often fails to launch.  Install EasyConnectDownload">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-04-21T14:31:59.000Z">
-<meta property="article:modified_time" content="2026-04-21T15:39:10.562Z">
+<meta property="article:modified_time" content="2026-04-21T15:44:35.947Z">
 <meta property="article:author" content="dyliu">
 <meta property="article:tag" content="Ubuntu">
 <meta property="article:tag" content="Network">
@@ -387,7 +387,7 @@
                 
                 <h1 id="Fixing-EasyConnect-Startup-Issues-on-Ubuntu"><a href="#Fixing-EasyConnect-Startup-Issues-on-Ubuntu" class="headerlink" title="Fixing EasyConnect Startup Issues on Ubuntu"></a>Fixing EasyConnect Startup Issues on Ubuntu</h1><p><strong>Problem:</strong> After installing EasyConnect on newer Ubuntu versions (<strong>20.04, 22.04, or later</strong>), the application often fails to launch.</p>
 <hr>
-<h2 id="1-Install-EasyConnect"><a href="#1-Install-EasyConnect" class="headerlink" title="1. Install EasyConnect"></a>1. Install EasyConnect</h2><p>Download the .deb package:</p>
+<h2 id="Install-EasyConnect"><a href="#Install-EasyConnect" class="headerlink" title="Install EasyConnect"></a>Install EasyConnect</h2><p>Download the .deb package:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget https://download.sangfor.com.cn/download/product/sslvpn/pkg/linux_767/EasyConnect_x64_7_6_7_3.deb<br></code></pre></td></tr></table></figure>
 
 <p>Install with apt (which handles dependencies better):</p>
@@ -397,24 +397,24 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /usr/share/sangfor/EasyConnect<br></code></pre></td></tr></table></figure>
 
 <p>At this point, you <strong>won’t</strong> able to run EasyConnet service succefully.</p>
-<h2 id="2-Identify-the-confliction"><a href="#2-Identify-the-confliction" class="headerlink" title="2. Identify the confliction"></a>2. Identify the confliction</h2><p>Acoording to the references, it seems to blame the old version of Electron framework, that’s nothing we can do. But we can <strong>downgrade</strong> the pango libraries to make it works.</p>
+<h2 id="Identify-the-confliction"><a href="#Identify-the-confliction" class="headerlink" title="Identify the confliction"></a>Identify the confliction</h2><p>Acoording to the references, it seems to blame the old version of Electron framework, that’s nothing we can do. But we can <strong>downgrade</strong> the pango libraries to make it works.</p>
 <p>Check which pango libs are linked:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ldd EasyConnect | grep pango<br></code></pre></td></tr></table></figure>
 <p>Modern Ubuntu ships with newer libararies, you’ll likely see three libraries like <code>libpangoft2-1.0.so.0</code>, <code>libpangocairo-1.0.so.0</code>, and <code>libpango-1.0.so.0</code>.</p>
 <p>Instead of modifying system-wide libraries (which could break other apps), we place the older pango versions <strong>directly inside EasyConnect’s folder</strong>. The application loads these local libraries first, bypassing the incompatible system versions.</p>
-<h2 id="3-Download-older-pango-packages-version-1-40-14-works"><a href="#3-Download-older-pango-packages-version-1-40-14-works" class="headerlink" title="3. Download older pango packages (version 1.40.14 works)"></a>3. Download older pango packages (version 1.40.14 works)</h2><p>Make a tmp file:</p>
+<h2 id="Download-older-pango-packages-version-1-40-14-works"><a href="#Download-older-pango-packages-version-1-40-14-works" class="headerlink" title="Download older pango packages (version 1.40.14 works)"></a>Download older pango packages (version 1.40.14 works)</h2><p>Make a tmp file:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> ~/tmp/libpango &amp;&amp; <span class="hljs-built_in">cd</span> <span class="hljs-variable">$_</span><br></code></pre></td></tr></table></figure>
 
 <p>For amd64 (Intel&#x2F;AMD 64-bit) systems, run</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget https://kr.archive.ubuntu.com/ubuntu/pool/main/p/pango1.0/libpangoft2-1.0-0_1.40.14-1_amd64.deb<br>wget https://kr.archive.ubuntu.com/ubuntu/pool/main/p/pango1.0/libpangocairo-1.0-0_1.40.14-1_amd64.deb<br>wget https://kr.archive.ubuntu.com/ubuntu/pool/main/p/pango1.0/libpango-1.0-0_1.40.14-1_amd64.deb<br></code></pre></td></tr></table></figure>
 
-<h2 id="4-Extract-and-copy-library-files"><a href="#4-Extract-and-copy-library-files" class="headerlink" title="4. Extract and copy library files"></a>4. Extract and copy library files</h2><p>Extract each .deb to its own directory:</p>
+<h2 id="Extract-and-copy-library-files"><a href="#Extract-and-copy-library-files" class="headerlink" title="Extract and copy library files"></a>Extract and copy library files</h2><p>Extract each .deb to its own directory:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">dpkg-deb -x libpangoft2-1.0-0_1.40.14-1_amd64.deb ./libpangoft2<br>dpkg-deb -x libpangocairo-1.0-0_1.40.14-1_amd64.deb ./libpangocairo<br>dpkg-deb -x libpango-1.0-0_1.40.14-1_amd64.deb ./libpango<br></code></pre></td></tr></table></figure>
 
 <p>And copy the old libraries to EasyConnect’s folder:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> ./libpangoft2/usr/lib/x86_64-linux-gnu/* /usr/share/sangfor/EasyConnect/<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> ./libpangocairo/usr/lib/x86_64-linux-gnu/* /usr/share/sangfor/EasyConnect/<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> ./libpango/usr/lib/x86_64-linux-gnu/* /usr/share/sangfor/EasyConnect/<br></code></pre></td></tr></table></figure>
 
-<h2 id="5-Verification"><a href="#5-Verification" class="headerlink" title="5. Verification"></a>5. Verification</h2><p>After copying, run</p>
+<h2 id="Verification"><a href="#Verification" class="headerlink" title="Verification"></a>Verification</h2><p>After copying, run</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ldd /usr/share/sangfor/EasyConnect/EasyConnect | grep pango<br></code></pre></td></tr></table></figure>
 <p>to check the version and path of libpango.</p>
 <p>Or directly run EasyConnect:</p>
