@@ -1,0 +1,1036 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog.github.io/img/fluid.png">
+  <link rel="icon" href="/blog.github.io/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="dyliu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="WSL2 下 Docker 环境配置 (NVIDIA GPU 直通 · 文件权限 · 代理) 记录一次在 WSL2（原生 Docker，非 Docker Desktop）中让 Jellyfin 调用 NVIDIA GPU 转码的踩坑过程，顺带整理三项高频配置：NVIDIA Container Toolkit、WSL 挂载权限、Docker 走 systemd 代理。  一、背景环境：Windows">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WSL Docker Configuration">
+<meta property="og:url" content="https://dyliu0312.github.io/blog.github.io/2026/10/17/WSL-Docker-Configuration/index.html">
+<meta property="og:site_name" content="dyliu&#39;s Blog">
+<meta property="og:description" content="WSL2 下 Docker 环境配置 (NVIDIA GPU 直通 · 文件权限 · 代理) 记录一次在 WSL2（原生 Docker，非 Docker Desktop）中让 Jellyfin 调用 NVIDIA GPU 转码的踩坑过程，顺带整理三项高频配置：NVIDIA Container Toolkit、WSL 挂载权限、Docker 走 systemd 代理。  一、背景环境：Windows">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-10-17T15:07:11.000Z">
+<meta property="article:modified_time" content="2026-10-17T15:14:08.515Z">
+<meta property="article:author" content="dyliu">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="WSL">
+<meta property="article:tag" content="NVIDIA">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>WSL Docker Configuration - dyliu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/blog.github.io/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog.github.io/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog.github.io/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"dyliu0312.github.io","root":"/blog.github.io/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/blog.github.io/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog.github.io/js/utils.js" ></script>
+  <script  src="/blog.github.io/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog.github.io/">
+      <strong>dyliu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog.github.io/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog.github.io/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog.github.io/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog.github.io/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog.github.io/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog.github.io/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog.github.io/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog.github.io/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog.github.io/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog.github.io/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>About</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog.github.io/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="WSL Docker Configuration"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-17 23:07" pubdate>
+          October 17, 2026 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">WSL Docker Configuration</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="WSL2-下-Docker-环境配置-NVIDIA-GPU-直通-·-文件权限-·-代理"><a href="#WSL2-下-Docker-环境配置-NVIDIA-GPU-直通-·-文件权限-·-代理" class="headerlink" title="WSL2 下 Docker 环境配置 (NVIDIA GPU 直通 · 文件权限 · 代理)"></a>WSL2 下 Docker 环境配置 (NVIDIA GPU 直通 · 文件权限 · 代理)</h1><blockquote>
+<p>记录一次在 WSL2（原生 Docker，非 Docker Desktop）中让 Jellyfin 调用 NVIDIA GPU 转码的踩坑过程，顺带整理三项高频配置：NVIDIA Container Toolkit、WSL 挂载权限、Docker 走 systemd 代理。</p>
+</blockquote>
+<h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><p>环境：Windows + WSL2（Ubuntu） + 原生安装的 Docker Engine（apt 版，<strong>非</strong> Docker Desktop &#x2F; Snap）。</p>
+<p>目标：容器内能执行 <code>nvidia-smi</code>，并让 Jellyfin 使用 NVENC 硬件转码。</p>
+<p>初始症状：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">$ docker exec -<span class="hljs-keyword">it</span> jellyfin nvidia-smi<br>Failed <span class="hljs-built_in">to</span> initialize NVML: GPU access blocked <span class="hljs-keyword">by</span> <span class="hljs-keyword">the</span> operating <span class="hljs-keyword">system</span><br></code></pre></td></tr></table></figure>
+
+<p>排查发现 CDI 设备、<code>nvidia</code> runtime 都已注册，<code>libdxcore.so</code> 也存在于 <code>/usr/lib/wsl/lib/</code>，但容器启动时 GPU 访问仍被系统层拦截。</p>
+<hr>
+<h2 id="二、GPU-直通：关键在于-no-cgroups-false"><a href="#二、GPU-直通：关键在于-no-cgroups-false" class="headerlink" title="二、GPU 直通：关键在于 no-cgroups = false"></a>二、GPU 直通：关键在于 <code>no-cgroups = false</code></h2><h3 id="2-1-先完成-NVIDIA-Container-Toolkit-基础注册"><a href="#2-1-先完成-NVIDIA-Container-Toolkit-基础注册" class="headerlink" title="2.1 先完成 NVIDIA Container Toolkit 基础注册"></a>2.1 先完成 NVIDIA Container Toolkit 基础注册</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 toolkit 后，把 nvidia runtime 注册进 Docker</span><br><span class="hljs-built_in">sudo</span> nvidia-ctk runtime configure --runtime=docker<br><br><span class="hljs-comment"># 验证</span><br>docker info | grep -i runtime<br><span class="hljs-comment"># 应出现：Runtimes: ... nvidia runc</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-解决-“GPU-access-blocked-by-the-operating-system”"><a href="#2-2-解决-“GPU-access-blocked-by-the-operating-system”" class="headerlink" title="2.2 解决 “GPU access blocked by the operating system”"></a>2.2 解决 “GPU access blocked by the operating system”</h3><p>编辑 NVIDIA Container Runtime 配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> nano /etc/nvidia-container-runtime/config.toml<br></code></pre></td></tr></table></figure>
+
+<p>确保 <code>no-cgroups</code> 被显式设置为 <code>false</code>（取消注释并赋值）：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-section">[nvidia-container-cli]</span><br><span class="hljs-attr">no-cgroups</span> = <span class="hljs-literal">false</span><br></code></pre></td></tr></table></figure>
+
+<p>保存后重启 Docker：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart docker<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-验证"><a href="#2-3-验证" class="headerlink" title="2.3 验证"></a>2.3 验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run --<span class="hljs-built_in">rm</span> --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi<br></code></pre></td></tr></table></figure>
+
+<p>成功输出 GPU 信息即表示通道打通。</p>
+<h3 id="2-4-原理与注意点"><a href="#2-4-原理与注意点" class="headerlink" title="2.4 原理与注意点"></a>2.4 原理与注意点</h3><ul>
+<li><p>WSL2 内核对 GPU 设备节点的 cgroups 白名单管理较严格，NVIDIA Runtime 默认依赖 cgroups 做设备授权会被拒绝。设为 <code>false</code> 后，运行时跳过 cgroups 限制，直接以设备节点方式注入 GPU。</p>
+</li>
+<li><p>后续启动需要 GPU 的容器（如 Jellyfin）<strong>统一使用 <code>--gpus all</code> 这条已验证的路径</strong>，不要混用 CDI 的 <code>--device nvidia.com/gpu=all</code>。</p>
+</li>
+<li><p>该配置写在配置文件里，WSL 重启一般保留；但 <strong>toolkit 升级时可能被覆盖重置</strong>，建议备份：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> /etc/nvidia-container-runtime/config.toml&#123;,.bak&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>排查过程中如有手动改过 <code>/etc/cdi/nvidia.yaml</code>，建议用 <code>nvidia-ctk cdi generate</code> 重新生成干净版本，并保持 <code>mode = &quot;auto&quot;</code> 即可，无需强制 <code>&quot;cdi&quot;</code>。</p>
+</li>
+</ul>
+<hr>
+<h2 id="三、WSL-文件系统权限：metadata-umask-fmask"><a href="#三、WSL-文件系统权限：metadata-umask-fmask" class="headerlink" title="三、WSL 文件系统权限：metadata + umask&#x2F;fmask"></a>三、WSL 文件系统权限：<code>metadata</code> + <code>umask</code>&#x2F;<code>fmask</code></h2><p>Windows 挂载进 WSL 的盘（如 <code>/mnt/c</code>）默认无法保存 Linux 权限，且<strong>所有文件都带可执行位</strong>，会干扰 git（显示大量 mode 变更）、脚本执行判断等。</p>
+<p>编辑 <code>/etc/wsl.conf</code>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[automount]</span><br><span class="hljs-attr">options</span> = <span class="hljs-string">&quot;metadata,umask=022,fmask=111&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>修改后需彻底重启 WSL 生效（在 <strong>Windows PowerShell</strong> 中执行）：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">wsl <span class="hljs-literal">--shutdown</span><br></code></pre></td></tr></table></figure>
+
+<p>再次进入 WSL 即可。</p>
+<h3 id="参数含义"><a href="#参数含义" class="headerlink" title="参数含义"></a>参数含义</h3><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>metadata</code></td>
+<td>允许在 Windows 挂载点保存 Linux 权限&#x2F;owner 信息</td>
+</tr>
+<tr>
+<td><code>umask=022</code></td>
+<td>目录权限 → <code>755</code>（默认 777 去掉 group&#x2F;other 的写）</td>
+</tr>
+<tr>
+<td><code>fmask=111</code></td>
+<td>文件权限 → 去掉所有执行位（普通文件 → <code>644</code>）</td>
+</tr>
+</tbody></table>
+<p><code>fmask=111</code> 是解决 “Windows 下所有文件都可执行” 的关键，否则 <code>git status</code> 会刷屏，<code>sh</code> 也会误判脚本能否运行。</p>
+<hr>
+<h2 id="四、Docker-走系统代理（systemd-drop-in）"><a href="#四、Docker-走系统代理（systemd-drop-in）" class="headerlink" title="四、Docker 走系统代理（systemd drop-in）"></a>四、Docker 走系统代理（systemd drop-in）</h2><p>当 Docker 处于 <code>systemd</code> 管理、且需要拉取境外镜像&#x2F;安装依赖时，给 <code>docker.service</code> 注入代理环境变量。</p>
+<h3 id="4-1-创建-drop-in-配置文件"><a href="#4-1-创建-drop-in-配置文件" class="headerlink" title="4.1 创建 drop-in 配置文件"></a>4.1 创建 drop-in 配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /etc/systemd/system/docker.service.d<br><span class="hljs-built_in">sudo</span> nano /etc/systemd/system/docker.service.d/http-proxy.conf<br></code></pre></td></tr></table></figure>
+
+<p>内容（以本地 7890 端口为例）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTP_PROXY=http://127.0.0.1:7890&quot;</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTPS_PROXY=http://127.0.0.1:7890&quot;</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;NO_PROXY=localhost,127.0.0.1,::1&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-重载并重启"><a href="#4-2-重载并重启" class="headerlink" title="4.2 重载并重启"></a>4.2 重载并重启</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl restart docker<br></code></pre></td></tr></table></figure>
+
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl show docker --property=Environment<br>docker pull hello-world   <span class="hljs-comment"># 实际拉一个镜像验证</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-⚠️-关于-127-0-0-1-的注意点"><a href="#4-3-⚠️-关于-127-0-0-1-的注意点" class="headerlink" title="4.3 ⚠️ 关于 127.0.0.1 的注意点"></a>4.3 ⚠️ 关于 <code>127.0.0.1</code> 的注意点</h3><p>代理运行在哪一侧，决定了地址该怎么写：</p>
+<ul>
+<li><strong>代理运行在 WSL2 内部</strong>：<code>127.0.0.1:7890</code> 直接可用。</li>
+<li><strong>代理运行在 Windows 宿主机</strong>（Clash &#x2F; v2rayN 等）：WSL2 默认是 NAT 网络，<code>127.0.0.1</code> 指向 WSL2 自己，<strong>无法直连宿主代理</strong>。两种解法：<ol>
+<li><p>使用宿主 IP：<code>http://$(ip route | awk &#39;/default/ &#123;print $3&#125;&#39;):7890</code>，并确保代理软件开启 “允许局域网连接”；</p>
+</li>
+<li><p>在 Windows 端 <code>%UserProfile%\.wslconfig</code> 中启用镜像网络模式，让 <code>127.0.0.1</code> 直接映射到宿主：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[wsl2]</span><br><span class="hljs-attr">networkingMode</span>=mirrored<br></code></pre></td></tr></table></figure>
+
+<p>改完后 <code>wsl --shutdown</code> 再进入。</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>此外，容器内部访问宿主代理时，容器内的 <code>127.0.0.1</code> 也不是宿主，需要改写为宿主的 <code>host.docker.internal</code> 或网关 IP。</p>
+<hr>
+<h2 id="五、总结清单"><a href="#五、总结清单" class="headerlink" title="五、总结清单"></a>五、总结清单</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>关键点</th>
+<th>生效方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPU 直通</td>
+<td><code>/etc/nvidia-container-runtime/config.toml</code> 中 <code>no-cgroups = false</code></td>
+<td><code>sudo systemctl restart docker</code></td>
+</tr>
+<tr>
+<td>容器 GPU 传参</td>
+<td>统一使用 <code>--gpus all</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>WSL 权限</td>
+<td><code>/etc/wsl.conf</code> 中 <code>options = &quot;metadata,umask=022,fmask=111&quot;</code></td>
+<td><code>wsl --shutdown</code></td>
+</tr>
+<tr>
+<td>Docker 代理</td>
+<td><code>docker.service.d/http-proxy.conf</code> 注入环境变量</td>
+<td><code>daemon-reload</code> + <code>restart docker</code></td>
+</tr>
+</tbody></table>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li>Deepseek-Chat</li>
+<li>[wsl2权限设置]<a target="_blank" rel="noopener" href="https://www.cnblogs.com/soarowl/p/18928937">https://www.cnblogs.com/soarowl/p/18928937</a></li>
+<li>[WSL2 Ubuntu中的docker配置使用宿主机的代理]<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1966290167791883993">https://zhuanlan.zhihu.com/p/1966290167791883993</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog.github.io/categories/Usage/" class="category-chain-item">Usage</a>
+  
+  
+
+      </span>
+    
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog.github.io/categories/Config/" class="category-chain-item">Config</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog.github.io/tags/Docker/" class="print-no-link">#Docker</a>
+      
+        <a href="/blog.github.io/tags/Ubuntu/" class="print-no-link">#Ubuntu</a>
+      
+        <a href="/blog.github.io/tags/Network/" class="print-no-link">#Network</a>
+      
+        <a href="/blog.github.io/tags/Windows/" class="print-no-link">#Windows</a>
+      
+        <a href="/blog.github.io/tags/WSL/" class="print-no-link">#WSL</a>
+      
+        <a href="/blog.github.io/tags/NVIDIA/" class="print-no-link">#NVIDIA</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>WSL Docker Configuration</div>
+      <div>https://dyliu0312.github.io/blog.github.io/2026/10/17/WSL-Docker-Configuration/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>dyliu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>October 17, 2026</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog.github.io/2026/06/10/Install-firefox-with-APT-source/" title="Install Firefox with APT Source">
+                        <span class="hidden-mobile">Install Firefox with APT Source</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"dyliu0312/blog.github.io","repo-id":"R_kgDONW-tiA","category":"Announcements","category-id":"DIC_kwDONW-tiM4ClOZX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"en","data-loading":"lazy"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        Views: 
+        <span id="busuanzi_value_site_pv"></span>
+        
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        Visitors: 
+        <span id="busuanzi_value_site_uv"></span>
+        
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog.github.io/js/events.js" ></script>
+<script  src="/blog.github.io/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blog.github.io/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog.github.io/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog.github.io/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
